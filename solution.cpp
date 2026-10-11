@@ -4,6 +4,9 @@
 using namespace std;
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
     int D;
     long long n;
     cin >> D >> n;
@@ -16,27 +19,36 @@ int main() {
     
     int last_position = 0;
     
-    // Simulate all n balls
-    for (long long ball = 1; ball <= n; ball++) {
-        int current = 1; // Start at root
-        
-        while (current <= total_nodes) {
-            // Check if current node is a leaf
-            if (current > (total_nodes / 2)) {
-                // This is a leaf node, toggle its state
-                switches[current] = 1 - switches[current];
-                last_position = current;
-                break;
-            }
+    // Special case for D=1
+    if (D == 1) {
+        // Only one node which is also a leaf
+        for (long long ball = 1; ball <= n; ball++) {
+            switches[1] = 1 - switches[1];
+            last_position = 1;
+        }
+    } else {
+        // Simulate all n balls
+        for (long long ball = 1; ball <= n; ball++) {
+            int current = 1; // Start at root
             
-            if (switches[current] == 0) {
-                // Switch is closed, open it and go left
-                switches[current] = 1;
-                current = current * 2; // Go to left child
-            } else {
-                // Switch is open, close it and go right
-                switches[current] = 0;
-                current = current * 2 + 1; // Go to right child
+            while (true) {
+                // Check if current node is a leaf (no children)
+                if (current * 2 > total_nodes) {
+                    // This is a leaf node, toggle its state
+                    switches[current] = 1 - switches[current];
+                    last_position = current;
+                    break;
+                }
+                
+                if (switches[current] == 0) {
+                    // Switch is closed, open it and go left
+                    switches[current] = 1;
+                    current = current * 2; // Go to left child
+                } else {
+                    // Switch is open, close it and go right
+                    switches[current] = 0;
+                    current = current * 2 + 1; // Go to right child
+                }
             }
         }
     }
