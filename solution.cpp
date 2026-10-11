@@ -3,9 +3,6 @@
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
     int D;
     long long n;
     cin >> D >> n;
@@ -14,46 +11,40 @@ int main() {
     int leaf_count = 1 << (D - 1);
     
     // Initialize all switches to closed (0)
-    vector<int> switches(total_nodes + 1, 0); // 1-indexed
+    vector<int> switches(total_nodes + 1, 0);
     
     int last_position = 0;
     
-    // Simulate all n balls - this is the correct approach
-    // The constraints should allow this to work
-    for (long long ball = 1; ball <= n; ball++) {
-        int current = 1; // Start at root
+    // Simulate each ball
+    for (long long k = 1; k <= n; k++) {
+        int node = 1;
         
-        while (true) {
-            // Check if current node is a leaf (no children)
-            if (current * 2 > total_nodes) {
-                // This is a leaf node, toggle its state
-                switches[current] = 1 - switches[current];
-                last_position = current;
+        while (node <= total_nodes) {
+            // If this is a leaf node
+            if (node > total_nodes / 2) {
+                switches[node] ^= 1;  // Toggle leaf switch
+                last_position = node;
                 break;
             }
             
-            if (switches[current] == 0) {
-                // Switch is closed, open it and go left
-                switches[current] = 1;
-                current = current * 2; // Go to left child
+            // Internal node: check switch state
+            if (switches[node] == 0) {
+                switches[node] = 1;  // Open switch
+                node = node * 2;      // Go left
             } else {
-                // Switch is open, close it and go right
-                switches[current] = 0;
-                current = current * 2 + 1; // Go to right child
+                switches[node] = 0;  // Close switch
+                node = node * 2 + 1;  // Go right
             }
         }
     }
     
-    // Output last position
     cout << last_position << endl;
     
-    // Output leaf node states (from left to right)
+    // Output leaf states
     for (int i = 0; i < leaf_count; i++) {
-        int leaf_pos = (1 << (D - 1)) + i;
-        cout << switches[leaf_pos];
-        if (i < leaf_count - 1) {
-            cout << " ";
-        }
+        int leaf = (1 << (D - 1)) + i;
+        cout << switches[leaf];
+        if (i < leaf_count - 1) cout << " ";
     }
     cout << endl;
     
