@@ -3,6 +3,9 @@
 using namespace std;
 
 int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    
     int D;
     long long n;
     cin >> D >> n;
@@ -15,7 +18,8 @@ int main() {
     
     int last_position = 0;
     
-    // Simulate all n balls
+    // Simulate all n balls - this is the correct approach
+    // The constraints should allow this to work
     for (long long ball = 1; ball <= n; ball++) {
         int current = 1; // Start at root
         
