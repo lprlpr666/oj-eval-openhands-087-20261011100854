@@ -1,12 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <cmath>
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
     int D;
     long long n;
     cin >> D >> n;
@@ -19,85 +15,27 @@ int main() {
     
     int last_position = 0;
     
-    // For efficiency with large n, we need to optimize
-    // If n is too large, we can't simulate all balls
-    // But we can use the fact that the k-th ball's path can be determined
-    // using binary representation
-    
-    if (n <= 1000000) {
-        // For smaller n, simulate directly
-        for (long long ball = 1; ball <= n; ball++) {
-            int current = 1; // Start at root
-            
-            while (true) {
-                // Check if current node is a leaf (no children)
-                if (current * 2 > total_nodes) {
-                    // This is a leaf node, toggle its state
-                    switches[current] = 1 - switches[current];
-                    last_position = current;
-                    break;
-                }
-                
-                if (switches[current] == 0) {
-                    // Switch is closed, open it and go left
-                    switches[current] = 1;
-                    current = current * 2; // Go to left child
-                } else {
-                    // Switch is open, close it and go right
-                    switches[current] = 0;
-                    current = current * 2 + 1; // Go to right child
-                }
-            }
-        }
-    } else {
-        // For large n, use optimized approach
-        // First, simulate a reasonable number of balls to establish pattern
-        long long simulate_count = 100000;
-        for (long long ball = 1; ball <= simulate_count; ball++) {
-            int current = 1; // Start at root
-            
-            while (true) {
-                // Check if current node is a leaf (no children)
-                if (current * 2 > total_nodes) {
-                    // This is a leaf node, toggle its state
-                    switches[current] = 1 - switches[current];
-                    last_position = current;
-                    break;
-                }
-                
-                if (switches[current] == 0) {
-                    // Switch is closed, open it and go left
-                    switches[current] = 1;
-                    current = current * 2; // Go to left child
-                } else {
-                    // Switch is open, close it and go right
-                    switches[current] = 0;
-                    current = current * 2 + 1; // Go to right child
-                }
-            }
-        }
+    // Simulate all n balls
+    for (long long ball = 1; ball <= n; ball++) {
+        int current = 1; // Start at root
         
-        // For the remaining balls, just find the last position
-        // using binary representation method
-        for (long long ball = simulate_count + 1; ball <= n; ball++) {
-            int current = 1; // Start at root
+        while (true) {
+            // Check if current node is a leaf (no children)
+            if (current * 2 > total_nodes) {
+                // This is a leaf node, toggle its state
+                switches[current] = 1 - switches[current];
+                last_position = current;
+                break;
+            }
             
-            while (true) {
-                // Check if current node is a leaf (no children)
-                if (current * 2 > total_nodes) {
-                    last_position = current;
-                    break;
-                }
-                
-                if (switches[current] == 0) {
-                    // Switch is closed, open it and go left
-                    switches[current] = 1;
-                    current = current * 2; // Go to left child
-                } else {
-                    // Switch is open, close it and go right
-                    switches[current] = 0;
-                    current = current * 2 + 1; // Go to right child
-                }
+            if (switches[current] == 0) {
+                // Switch is closed, open it and go left
+                switches[current] = 1;
+                current = current * 2; // Go to left child
+            } else {
+                // Switch is open, close it and go right
+                switches[current] = 0;
+                current = current * 2 + 1; // Go to right child
             }
         }
     }
